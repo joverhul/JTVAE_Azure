@@ -19,6 +19,9 @@ A prepare_image job will be created with both environments, and the build should
 
 Create a yaml file for job submission for each of the different steps of the JTVAE model training. For further information on each of the steps please visit the original JTVAE repo and paper as described in the use case. The code is the name of the folder that contains the code you will be running.
 
+### Data Location
+The datasets used for the vocabulary generation, preprocessing, training, and reconstruction evaluation can all be found in the [Raw Data folder](https://github.com/joverhul/JTVAE_Azure/tree/main/LOGP-JTVAE-PAPER/Raw-Data/ZINC).
+
 ### Vocabulary Generation
 Requires the total dataset SMILES strings as input.  The output produced is a file with the broken down vocabulary. This job should be run on a CPU cluster inside of the CPU environment described above. 
 
