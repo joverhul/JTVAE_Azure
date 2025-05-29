@@ -1,0 +1,73 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+display_name: jtvae_pipeline_coconut_updated_train
+description: Pipeline for jtvae training.
+
+jobs:
+  vocabulary_generation:
+    type: command
+    component: azureml:vocabulary_generation@latest
+    inputs:
+      total_vocab: 
+        type: uri_file
+        path: azureml://datastores/workspaceblobstore/paths/UI/2024-02-24_021817_UTC/scaffold_split_25perc_total.txt
+    outputs:
+      total_vocab_paper: 
+        type: uri_file
+        mode: upload
+    code: src
+    environment: azureml:CPU_JTVAE:1
+    compute: azureml:overhulse-cpu-cluster
+    command: >-
+      ./script-vocab.sh ${{inputs.total_vocab}} ${{outputs.total_vocab_paper}}
+      
+  preprocess:
+    type: command
+    component: azureml:preprocess@latest
+    inputs:
+      total_train_set: 
+        type: uri_file
+        path: azureml:coconut_220K_train:1
+    outputs:
+      preprocessed_train_set_details: 
+        mode: upload
+        type: uri_file
+      preprocessed_train_set_pkl: 
+        type: uri_folder
+        mode: upload
+    code: src
+    environment: azureml:CPU_JTVAE:1
+    compute: azureml:overhulse-cpu-cluster
+    command: >-
+      ./script-preprocess.sh ${{inputs.total_train_set}} ${{outputs.preprocessed_train_set_details}} ${{outputs.preprocessed_train_set_pkl}}
+
+  jtvae_train:
+    type: command
+    component: azureml:jtvae_train@latest
+    inputs:
+      total_preprocessed_folder:
+        mode: ro_mount
+        type: uri_folder
+        path: ${{parent.jobs.preprocess.outputs.preprocessed_train_set_pkl}}
+      total_vocab:
+        mode: ro_mount
+        type: uri_file
+        path: ${{parent.jobs.vocabulary_generation.outputs.total_vocab_paper}}
+    outputs:
+      model_train: 
+        mode: rw_mount
+        type: uri_folder
+      model_train_out:
+        mode: rw_mount
+        type: uri_file
+    code: src
+    environment: azureml:gpu_jtvae:1
+    compute: azureml:overhulse-dedicated-4gpu
+    distribution:
+      type: pytorch 
+      process_count_per_instance: 4
+    resources:
+      instance_count: 1
+    command: >-
+      ./script-train-coconut.sh ${{inputs.total_preprocessed_folder}} ${{inputs.total_vocab}} ${{outputs.model_train}} ${{outputs.model_train_out}}

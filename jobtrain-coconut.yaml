@@ -1,0 +1,33 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+code: src
+command: >-
+  ./script-train-coconut.sh ${{inputs.total_preprocessed_folder}} ${{inputs.total_vocab}} ${{outputs.model_train}} ${{outputs.model_train_220K_out}}
+inputs:
+  total_preprocessed_folder:
+    path: >-
+      azureml:azureml_purple_insect_570vnyc967_output_data_preprocessed_canonical_coconut_compounds_pkl:1
+    mode: ro_mount
+    type: uri_folder
+  total_vocab:
+    path: >-
+      azureml:azureml_musing_dolphin_fyp1x53smn_output_data_total_vocab_paper:1
+    mode: ro_mount
+    type: uri_file
+outputs:
+  model_train:
+    mode: rw_mount
+    type: uri_folder
+  model_train_220K_out:
+    mode: rw_mount
+    type: uri_file
+environment: azureml:gpu_jtvae:1
+compute: azureml:overhulse-dedicated-nc24
+distribution:
+  type: pytorch 
+  process_count_per_instance: 1
+resources:
+  instance_count: 1
+  shm_size: 1000G
+display_name: jtvaegpu_train_coconut_print_smiles
+experiment_name: jtvaegpu_train_coconut_print_smiles
+description: Train a Machine Learning model using a workspace Data asset.

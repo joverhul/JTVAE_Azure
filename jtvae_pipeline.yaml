@@ -1,0 +1,54 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+display_name: jtvae_pipeline_full_pipeline
+description: Pipeline for jtvae training.
+
+jobs:
+  vocabulary_generation:
+    type: command
+    component: azureml:vocabulary_generation@latest
+    inputs:
+      total_vocab: 
+        type: uri_file
+        path: azureml:coconut_dataset_canonical:1
+    outputs:
+      total_vocab_paper: 
+        type: uri_file
+        mode: upload
+      
+  preprocess:
+    type: command
+    component: azureml:preprocess@latest
+    inputs:
+      total_train_set: 
+        type: uri_file
+        path: azureml:coconut_dataset_canonical:1
+    outputs:
+      preprocessed_train_set_details: 
+        mode: upload
+        type: uri_file
+      preprocessed_train_set_pkl: 
+        type: uri_folder
+        mode: upload
+    code: src
+
+  jtvae_train:
+    type: command
+    component: azureml:jtvae_train@latest
+    inputs:
+      total_preprocessed_folder:
+        mode: ro_mount
+        type: uri_folder
+        path: ${{parent.jobs.preprocess.outputs.preprocessed_train_set_pkl}}
+      total_vocab:
+        mode: ro_mount
+        type: uri_file
+        path: ${{parent.jobs.vocabulary_generation.outputs.total_vocab_paper}}
+    outputs:
+      model_train:
+        mode: rw_mount
+        type: uri_folder
+      model_train_out:
+        mode: rw_mount
+        type: uri_file

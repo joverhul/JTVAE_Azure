@@ -1,0 +1,34 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+code: src
+command: >-
+  ./script-recon-eval.sh ${{inputs.total_train_test}} ${{inputs.total_vocab}} ${{inputs.model_epoch_4}} ${{inputs.model_job_folder}} ${{outputs.recon_test_1500_coconut_out_4}}
+inputs:
+  total_train_test:
+    path: >-
+      azureml:coconut_test:1
+    mode: ro_mount
+    type: uri_file
+  total_vocab:
+    path: >-
+      azureml:azureml_joyful_kumquat_024yf20lxt_output_data_total_vocab_coconut:1
+    mode: ro_mount
+    type: uri_file
+  model_epoch_4:
+    path: >-
+      azureml:model-epoch-4:1
+    mode: ro_mount
+    type: uri_file
+  model_job_folder:
+    path: >-
+      azureml:azureml_mighty_pipe_49g4f82cl8_output_data_model_train_220K_out:1
+    mode: ro_mount
+    type: uri_folder
+outputs:
+  recon_test_1500_coconut_out_4:
+    mode: rw_mount
+    type: uri_file
+environment: azureml:CPU_JTVAE:2
+compute: azureml:overhulse-cpu-cluster
+display_name: jtvaecpu_reconeval_test
+experiment_name: jtvaecpu_reconeval_test
+description: Train a Machine Learning model using a workspace Data asset.
