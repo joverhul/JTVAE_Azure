@@ -1,11 +1,10 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+name: preprocess
 code: src
 command: >-
-  ./script-preprocess.sh ${{inputs.canonical_compounds}} ${{outputs.preprocessed_canonical_compounds}} ${{outputs.preprocessed_canonical_compounds_pkl}}
+  ./script-preprocess.sh ${{inputs.total_train_set}} ${{outputs.preprocessed_train_set_details}} ${{outputs.preprocessed_train_set_pkl}}
 inputs:
   total_train_set:
-    path: >-
-      azureml:zinc-dataset-train:1
     mode: ro_mount
     type: uri_file
 outputs:
@@ -16,7 +15,7 @@ outputs:
     mode: rw_mount
     type: uri_folder
 environment: azureml:CPU_JTVAE:1
-compute: azureml:cpu-cluster-2
-display_name: jtvaecpu_preprocessed_compounds_pkl_finding_bad_compounds
-experiment_name: jtvaecpu_preprocessed_compounds_pkl
+compute: azureml:overhulse-cpu-cluster-2
+display_name: jtvaecpu_preprocess
+experiment_name: jtvaecpu_preprocess
 description: Preprocess the dataset.

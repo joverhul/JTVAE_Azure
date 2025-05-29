@@ -18,7 +18,7 @@ outputs:
     mode: rw_mount
     type: uri_file
 environment: azureml:CPU_JTVAE:1
-compute: azureml:overhulse-cpu-cluster
+compute: azureml:cpu-cluster
 display_name: jtvaecpu_reconeval_test
 experiment_name: jtvaecpu_reconeval_test
 description: Reconstruction evaluation for test set.

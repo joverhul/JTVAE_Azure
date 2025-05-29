@@ -1,0 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+name: reconstruction_evaluation
+code: src
+command: >-
+  ./script-recon-eval.sh ${{inputs.total_train}} ${{inputs.total_vocab}} ${{inputs.model_job_folder}} ${{outputs.recon_eval_test_set}}
+inputs:
+  total_train:
+    mode: ro_mount
+    type: uri_file
+  total_vocab:
+    mode: ro_mount
+    type: uri_file
+  model_job_folder:
+    mode: ro_mount
+    type: uri_folder
+outputs:
+  recon_eval_test_set:
+    mode: rw_mount
+    type: uri_file
+environment: azureml:CPU_JTVAE:1
+compute: azureml:cpu-cluster
+display_name: jtvaecpu_reconeval_test
+experiment_name: jtvaecpu_reconeval_test
+description: Reconstruction evaluation for test set.

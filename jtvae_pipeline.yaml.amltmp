@@ -1,7 +1,7 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 type: pipeline
 
-display_name: jtvae_pipeline_coconut_updated_train
+display_name: jtvae_pipeline_full_pipeline
 description: Pipeline for jtvae training.
 
 jobs:
@@ -11,16 +11,11 @@ jobs:
     inputs:
       total_vocab: 
         type: uri_file
-        path: azureml://datastores/workspaceblobstore/paths/UI/2024-02-24_021817_UTC/scaffold_split_25perc_total.txt
+        path: azureml:coconut_dataset_canonical:1
     outputs:
       total_vocab_paper: 
         type: uri_file
         mode: upload
-    code: src
-    environment: azureml:CPU_JTVAE:1
-    compute: azureml:overhulse-cpu-cluster
-    command: >-
-      ./script-vocab.sh ${{inputs.total_vocab}} ${{outputs.total_vocab_paper}}
       
   preprocess:
     type: command
@@ -28,7 +23,7 @@ jobs:
     inputs:
       total_train_set: 
         type: uri_file
-        path: azureml:coconut_220K_train:1
+        path: azureml:coconut_dataset_canonical:1
     outputs:
       preprocessed_train_set_details: 
         mode: upload
@@ -37,10 +32,6 @@ jobs:
         type: uri_folder
         mode: upload
     code: src
-    environment: azureml:CPU_JTVAE:1
-    compute: azureml:overhulse-cpu-cluster
-    command: >-
-      ./script-preprocess.sh ${{inputs.total_train_set}} ${{outputs.preprocessed_train_set_details}} ${{outputs.preprocessed_train_set_pkl}}
 
   jtvae_train:
     type: command
@@ -55,19 +46,9 @@ jobs:
         type: uri_file
         path: ${{parent.jobs.vocabulary_generation.outputs.total_vocab_paper}}
     outputs:
-      model_train: 
+      model_train:
         mode: rw_mount
         type: uri_folder
       model_train_out:
         mode: rw_mount
         type: uri_file
-    code: src
-    environment: azureml:gpu_jtvae:1
-    compute: azureml:overhulse-dedicated-4gpu
-    distribution:
-      type: pytorch 
-      process_count_per_instance: 4
-    resources:
-      instance_count: 1
-    command: >-
-      ./script-train-coconut.sh ${{inputs.total_preprocessed_folder}} ${{inputs.total_vocab}} ${{outputs.model_train}} ${{outputs.model_train_out}}

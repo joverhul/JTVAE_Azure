@@ -1,10 +1,11 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
-name: vocabulary_generation
 code: src
 command: >-
   ./script-vocab.sh ${{inputs.total_vocab}} ${{outputs.total_vocab_paper}}
 inputs:
   total_vocab:
+    path: >-
+      azureml:coconut_dataset_canonical:1
     mode: ro_mount
     type: uri_file
 outputs:
@@ -12,7 +13,7 @@ outputs:
     mode: rw_mount
     type: uri_file
 environment: azureml:CPU_JTVAE:1
-compute: azureml:overhulse-cpu-cluster
-display_name: jtvaecpu_vocab_component
-experiment_name: jtvaecpu_vocab_component
-description: Generate vocabulary for JTVAE training.
+compute: azureml:cpu-cluster
+display_name: jtvaecpu_vocab_gen_canonical_coconut_compounds
+experiment_name: jtvaecpu_vocab_gen_canonical_coconut_compounds
+description: Train a Machine Learning model using a workspace Data asset.

@@ -1,20 +1,23 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
-name: jtvae_train_10epoch
 code: src
 command: >-
-  ./script-train.sh ${{inputs.total_preprocessed_folder}} ${{inputs.total_vocab}} ${{outputs.model_train}} ${{outputs.model_train_out}} ${{outputs.rejected_smiles}}
+  ./script-train-coconut.sh ${{inputs.total_preprocessed_folder}} ${{inputs.total_vocab}} ${{outputs.model_train}} ${{outputs.model_train_canonical_out}} ${{outputs.rejected_smiles}}
 inputs:
   total_preprocessed_folder:
+    path: >-
+      azureml:azureml_purple_insect_570vnyc967_output_data_preprocessed_canonical_coconut_compounds_pkl:1
     mode: ro_mount
     type: uri_folder
   total_vocab:
+    path: >-
+      azureml:azureml_musing_dolphin_fyp1x53smn_output_data_total_vocab_paper:1
     mode: ro_mount
     type: uri_file
 outputs:
   model_train:
     mode: rw_mount
     type: uri_folder
-  model_train_out:
+  model_train_canonical_out:
     mode: rw_mount
     type: uri_file
   rejected_smiles:
@@ -27,7 +30,7 @@ distribution:
   process_count_per_instance: 4
 resources:
   instance_count: 1
-  shm_size: 1000G
-display_name: jtvaegpu_train
-experiment_name: jtvaegpu_train
+  shm_size: 2000G
+display_name: jtvaegpu_train_print_smiles
+experiment_name: jtvaegpu_train_print_smiles
 description: Train a Machine Learning model using a workspace Data asset.

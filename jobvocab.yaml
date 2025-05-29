@@ -13,7 +13,7 @@ outputs:
     mode: rw_mount
     type: uri_file
 environment: azureml:CPU_JTVAE:1
-compute: azureml:overhulse-cpu-cluster
+compute: azureml:cpu-cluster
 display_name: jtvaecpu_vocab_gen_canonical_coconut_compounds
 experiment_name: jtvaecpu_vocab_gen_canonical_coconut_compounds
 description: Train a Machine Learning model using a workspace Data asset.
