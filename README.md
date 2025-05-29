@@ -1,3 +1,5 @@
+This software is a branch from [CBIIT](https://github.com/CBIIT/JTVAE.git).  Changes were made to the code to easily run on Microsoft Azure in an Azure Machine Learning environment.  For specific instructions about how to use GGMD on Azure please go to [AML Instructions](https://github.com/joverhul/JTVAE_Azure/blob/main/AML_instructions.md)
+
 ## Introduction
 This repository contains an improved version of the Junction Tree Variational Autoencoder (JTVAE) method. 
 
