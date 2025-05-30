@@ -41,3 +41,43 @@ Requires a test dataset, the total vocab, and the model output folder.  The outp
 
 ### Components and Pipeline
 The component job submission is similar to specific jobs, but does not require paths in the component set up. Indicate the paths either in the pipeline.yaml file, or inside the pipeline designer on AML.
+
+### yaml file contents
+#### code
+Folder that contains your source code.
+
+#### command
+Contains the .sh file, along with the inputs and outputs.
+
+#### inputs
+Input files and input names mounted on the AML space.
+
+#### outputs
+Output files that will be written to AML.
+
+#### environment
+The name of the environment you created to run the job in.
+
+#### compute
+The name of the compute cluster the job will be run on.
+
+#### naming
+The display name, experiment name, and description are all customizable for what you will call the job.
+
+### sh script edits
+To submit the job, create a .sh file that will run your desired code. A runnable example can be found in `script-vocab.sh`.
+src/script-vocab.sh
+
+### submit job
+
+Once all files are updated, run the cell: 
+
+`!az ml job create -f jobvocab.yaml`
+
+in the jtvae-submit-job.ipynb notebook.
+
+Estimated time for jobs using provided values:
+vocab: 20m 17s
+preprocess: 2h 20m
+train: 6h 57m
+reconstruction: 14m 44s
